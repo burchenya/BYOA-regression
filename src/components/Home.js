@@ -27,6 +27,31 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
+// Add custom CSS for regression nodes
+const styles = `
+  .regression-node {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  .regression-node .react-flow__node-default {
+    height: auto;
+  }
+  .regression-node .react-flow__handle {
+    background: transparent;
+  }
+  .regression-node div[data-label]:first-line {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+  }
+`;
+
+// Create a style element and append it to the document head
+const styleSheet = document.createElement('style');
+styleSheet.type = 'text/css';
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);
+
 // Create a combined d3 object with all required functions
 const d3 = {
   ...d3Array,
@@ -101,12 +126,17 @@ const medicalExamples = {
     heartDisease: {
       name: 'Heart Disease Risk',
       data: Array.from({ length: 100 }, () => {
-        const age = 30 + Math.random() * 50;
-        const cholesterol = 150 + Math.random() * 150;
-        const probability = 1 / (1 + Math.exp(-(age/20 + cholesterol/100 - 15)));
+        const age = 30 + Math.random() * 50;  // age between 30-80
+        const cholesterol = 150 + Math.random() * 150;  // cholesterol between 150-300
+        // Make the separation more clear with adjusted coefficients
+        const b0 = -10;
+        const b1 = 0.15;  // coefficient for age
+        const b2 = 0.02;  // coefficient for cholesterol
+        const z = b0 + b1 * age + b2 * cholesterol;
+        const probability = 1 / (1 + Math.exp(-z));
         const outcome = Math.random() < probability ? 1 : 0;
         return { age, cholesterol, outcome };
-      }),
+      }).sort((a, b) => a.age - b.age),  // Sort by age for better visualization
       xLabel: 'Age (years)',
       yLabel: 'Cholesterol (mg/dL)'
     }
@@ -201,6 +231,21 @@ const regressionTypes = [
   }
 ];
 
+const RegressionNode = ({ data }) => {
+  const lines = data.label.split('\n');
+  const title = lines[0];
+  const details = lines.slice(1);
+  
+  return (
+    <div style={{ padding: '10px' }}>
+      <div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '14px' }}>{title}</div>
+      {details.map((line, i) => (
+        <div key={i} style={{ fontSize: '13px' }}>{line}</div>
+      ))}
+    </div>
+  );
+};
+
 function Home() {
   const [selectedRegression, setSelectedRegression] = useState('/multiple');
   const [selectedDataset, setSelectedDataset] = useState('bmiFactors');
@@ -219,6 +264,10 @@ function Home() {
   // Find the currently selected regression type
   const selectedType = regressionTypes.find(type => type.path === selectedRegression);
   const regressionKey = selectedRegression.substring(1); // Remove leading slash
+
+  const nodeTypes = {
+    regressionNode: RegressionNode
+  };
 
   const initialNodes = [
     // Start Node
@@ -274,20 +323,32 @@ function Home() {
     // Simple Linear
     {
       id: 'simple_linear',
+      type: 'regressionNode',
       data: { 
         label: 'Simple Linear Regression\n• One predictor\n• Direct relationship\n• Example: Age → Blood Pressure' 
       },
       position: { x: 0, y: 550 },
-      style: { background: '#f0f9f4', border: '2px solid #27ae60', color: '#27ae60', width: 220, padding: '15px', fontSize: '13px' }
+      style: { 
+        background: '#f0f9f4', 
+        border: '2px solid #27ae60', 
+        color: '#27ae60', 
+        width: 220
+      }
     },
     // Multiple Linear
     {
       id: 'multiple_linear',
+      type: 'regressionNode',
       data: { 
         label: 'Multiple Linear Regression\n• Multiple predictors\n• Complex relationships\n• Example: Age, BMI, Diet → Blood Pressure' 
       },
       position: { x: 250, y: 550 },
-      style: { background: '#f0f9f4', border: '2px solid #27ae60', color: '#27ae60', width: 220, padding: '15px', fontSize: '13px' }
+      style: { 
+        background: '#f0f9f4', 
+        border: '2px solid #27ae60', 
+        color: '#27ae60', 
+        width: 220
+      }
     },
     // Binary Predictors Decision
     {
@@ -299,11 +360,32 @@ function Home() {
     // Simple Logistic
     {
       id: 'simple_logistic',
+      type: 'regressionNode',
       data: { 
         label: 'Simple Logistic Regression\n• One/few predictors\n• Binary outcome\n• Example: Age → Disease Risk (Yes/No)' 
       },
-      position: { x: 500, y: 550 },
-      style: { background: '#fdf3f2', border: '2px solid #c0392b', color: '#c0392b', width: 220, padding: '15px', fontSize: '13px' }
+      position: { x: 400, y: 550 },
+      style: { 
+        background: '#fdf3f2', 
+        border: '2px solid #c0392b', 
+        color: '#c0392b', 
+        width: 220
+      }
+    },
+    // Multiple Logistic
+    {
+      id: 'multiple_logistic',
+      type: 'regressionNode',
+      data: { 
+        label: 'Multiple Logistic Regression\n• Multiple predictors\n• Binary outcome\n• Example: Age, BMI, BP → Disease Risk' 
+      },
+      position: { x: 600, y: 550 },
+      style: { 
+        background: '#fdf3f2', 
+        border: '2px solid #c0392b', 
+        color: '#c0392b', 
+        width: 220
+      }
     },
     // Count Data Decision
     {
@@ -315,20 +397,32 @@ function Home() {
     // Simple Poisson
     {
       id: 'simple_poisson',
+      type: 'regressionNode',
       data: { 
         label: 'Simple Poisson Regression\n• Single event type\n• Example: Monthly infections per ward' 
       },
       position: { x: 750, y: 550 },
-      style: { background: '#fef5e7', border: '2px solid #d35400', color: '#d35400', width: 220, padding: '15px', fontSize: '13px' }
+      style: { 
+        background: '#fef5e7', 
+        border: '2px solid #d35400', 
+        color: '#d35400', 
+        width: 220
+      }
     },
     // Multiple Poisson
     {
       id: 'multiple_poisson',
+      type: 'regressionNode',
       data: { 
         label: 'Multiple Poisson Regression\n• Multiple event types\n• Example: Different types of complications' 
       },
       position: { x: 1000, y: 550 },
-      style: { background: '#fef5e7', border: '2px solid #d35400', color: '#d35400', width: 220, padding: '15px', fontSize: '13px' }
+      style: { 
+        background: '#fef5e7', 
+        border: '2px solid #d35400', 
+        color: '#d35400', 
+        width: 220
+      }
     },
     // Time Data Decision
     {
@@ -340,20 +434,32 @@ function Home() {
     // Cox Model
     {
       id: 'cox_model',
+      type: 'regressionNode',
       data: { 
         label: 'Cox Proportional Hazards\n• Censored survival data\n• Example: Patient survival times' 
       },
       position: { x: 1250, y: 550 },
-      style: { background: '#f5f0f7', border: '2px solid #8e44ad', color: '#8e44ad', width: 220, padding: '15px', fontSize: '13px' }
+      style: { 
+        background: '#f5f0f7', 
+        border: '2px solid #8e44ad', 
+        color: '#8e44ad', 
+        width: 220
+      }
     },
     // Time Series
     {
-      id: 'time_series',
+      id: 'parametric_survival',
+      type: 'regressionNode',
       data: { 
-        label: 'Time Series Analysis\n• Complete temporal data\n• Example: Disease progression' 
+        label: 'Parametric Survival Regression\n• Complete survival data\n• Example: Treatment duration effect' 
       },
       position: { x: 1500, y: 550 },
-      style: { background: '#f5f0f7', border: '2px solid #8e44ad', color: '#8e44ad', width: 220, padding: '15px', fontSize: '13px' }
+      style: { 
+        background: '#f5f0f7', 
+        border: '2px solid #8e44ad', 
+        color: '#8e44ad', 
+        width: 220
+      }
     }
   ];
 
@@ -446,7 +552,16 @@ function Home() {
       id: 'e-binary-simple',
       source: 'binary_predictors',
       target: 'simple_logistic',
-      label: 'Simple',
+      label: 'One/few',
+      labelStyle: { fill: '#c0392b', fontWeight: 700 },
+      style: { stroke: '#c0392b' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#c0392b' }
+    },
+    {
+      id: 'e-binary-multiple',
+      source: 'binary_predictors',
+      target: 'multiple_logistic',
+      label: 'Multiple',
       labelStyle: { fill: '#c0392b', fontWeight: 700 },
       style: { stroke: '#c0392b' },
       markerEnd: { type: MarkerType.ArrowClosed, color: '#c0392b' }
@@ -497,9 +612,9 @@ function Home() {
       markerEnd: { type: MarkerType.ArrowClosed, color: '#8e44ad' }
     },
     {
-      id: 'e-time-series',
+      id: 'e-time-parametric',
       source: 'time_predictors',
-      target: 'time_series',
+      target: 'parametric_survival',
       label: 'No',
       labelStyle: { fill: '#8e44ad', fontWeight: 700 },
       style: { stroke: '#8e44ad' },
@@ -543,7 +658,7 @@ function Home() {
       // Add axes
       svg.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x))
+        .call(d3.axisBottom(x).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('x', width / 2)
         .attr('y', 50)
@@ -552,7 +667,7 @@ function Home() {
         .text(currentExample.xLabel);
 
       svg.append('g')
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -60)
@@ -623,8 +738,7 @@ function Home() {
       // Add axes
       svg.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x)
-          .tickFormat(selectedFactor === 5 ? d => d === 0 ? 'Single' : d === 1 ? 'Married' : '' : d3.format(',.1f')))
+        .call(d3.axisBottom(x).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('x', width / 2)
         .attr('y', 50)
@@ -633,7 +747,7 @@ function Home() {
         .text(currentExample.factors[selectedFactor]);
 
       svg.append('g')
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -60)
@@ -712,7 +826,7 @@ function Home() {
       // Add axes
       svg.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x))
+        .call(d3.axisBottom(x).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('x', width / 2)
         .attr('y', 50)
@@ -721,7 +835,7 @@ function Home() {
         .text(currentExample.xLabel);
 
       svg.append('g')
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -60)
@@ -742,14 +856,22 @@ function Home() {
         .style('opacity', 0.7);
 
       // Add decision boundary curve
-      const curvePoints = [];
-      for (let age = d3.min(data, d => d.age); age <= d3.max(data, d => d.age); age += 0.5) {
-        for (let chol = d3.min(data, d => d.cholesterol); chol <= d3.max(data, d => d.cholesterol); chol += 1) {
-          const prob = 1 / (1 + Math.exp(-(age/20 + chol/100 - 15)));
-          if (Math.abs(prob - 0.5) < 0.01) {
-            curvePoints.push([age, chol]);
-          }
-        }
+      const decisionBoundary = [];
+      const minAge = d3.min(data, d => d.age);
+      const maxAge = d3.max(data, d => d.age);
+      const step = (maxAge - minAge) / 50;
+
+      // Use the same coefficients as in data generation
+      const b0 = -10;
+      const b1 = 0.15;  // coefficient for age
+      const b2 = 0.02;  // coefficient for cholesterol
+
+      // Calculate decision boundary points where probability = 0.5
+      // At p = 0.5, z = 0, so: b0 + b1*age + b2*cholesterol = 0
+      // Therefore: cholesterol = -(b0 + b1*age)/b2
+      for (let age = minAge; age <= maxAge; age += step) {
+        const cholesterol = -(b0 + b1 * age) / b2;
+        decisionBoundary.push([age, cholesterol]);
       }
 
       const line = d3.line()
@@ -758,13 +880,39 @@ function Home() {
         .curve(d3.curveBasis);
 
       svg.append('path')
-        .datum(curvePoints)
+        .datum(decisionBoundary)
         .attr('fill', 'none')
         .attr('stroke', '#e74c3c')
-        .attr('stroke-width', 2)
-        .attr('stroke-dasharray', '5,5')
+        .attr('stroke-width', 3)
         .attr('d', line);
 
+      // Add legend
+      const legend = svg.append('g')
+        .attr('transform', `translate(${width - 150}, 20)`);
+
+      legend.append('circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', 7)
+        .style('fill', '#ff6b6b');
+
+      legend.append('text')
+        .attr('x', 15)
+        .attr('y', 5)
+        .text('Disease Present')
+        .style('font-size', '12px');
+
+      legend.append('circle')
+        .attr('cx', 0)
+        .attr('cy', 25)
+        .attr('r', 7)
+        .style('fill', '#4ecdc4');
+
+      legend.append('text')
+        .attr('x', 15)
+        .attr('y', 30)
+        .text('Disease Absent')
+        .style('font-size', '12px');
     } else if (regressionKey === 'cox') {
       const data = currentExample.data;
       
@@ -797,7 +945,7 @@ function Home() {
       // Add axes
       svg.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x))
+        .call(d3.axisBottom(x).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('x', width / 2)
         .attr('y', 50)
@@ -806,7 +954,7 @@ function Home() {
         .text('Time (months)');
 
       svg.append('g')
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -60)
@@ -850,10 +998,10 @@ function Home() {
         .domain([0, d3.max(data, d => d.infections)])
         .range([height, 0]);
 
-      // Add axes
+      // Add axes for Poisson regression
       svg.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x))
+        .call(d3.axisBottom(x).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('x', width / 2)
         .attr('y', 50)
@@ -862,7 +1010,7 @@ function Home() {
         .text('Number of Beds');
 
       svg.append('g')
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y).tickFormat(d3.format(',.0f')))
         .append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -60)
@@ -976,24 +1124,6 @@ function Home() {
           </Grid>
         </Grid>
 
-        <Box sx={{ backgroundColor: '#fff', p: 4, borderRadius: 2, mb: 4 }}>
-          <Typography variant="h3" gutterBottom sx={{ fontSize: '2rem', color: '#2c3e50', mb: 3 }}>
-            Analysis Selection Flowchart
-          </Typography>
-          
-          <Box sx={{ height: 500, backgroundColor: '#f8f9fa' }}>
-            <ReactFlow
-              nodes={initialNodes}
-              edges={initialEdges}
-              fitView
-              attributionPosition="bottom-right"
-            >
-              <Controls />
-              <Background />
-            </ReactFlow>
-          </Box>
-        </Box>
-
         <Box sx={{ backgroundColor: '#fff', p: 3, borderRadius: 2 }}>
           <Typography variant="h3" gutterBottom sx={{ fontSize: '2rem', color: '#2c3e50' }}>
             Decision Guide
@@ -1049,6 +1179,39 @@ function Home() {
             </Paper>
           </Grid>
         </Grid>
+      </Box>
+
+      <Box sx={{ mb: 6, px: 4 }}>
+        <Typography variant="h3" gutterBottom sx={{ fontSize: '2rem', mb: 3 }}>
+          Which Regression Analysis Type to Use?
+        </Typography>
+        <Typography variant="body1" sx={{ fontSize: '1.4rem', mb: 4 }}>
+          Choosing the right type of regression analysis is crucial for accurate results. Follow this interactive flowchart to determine which regression type best suits your medical data:
+        </Typography>
+        
+        <Box sx={{ backgroundColor: '#fff', p: 4, borderRadius: 2, mb: 4 }}>
+          <Box sx={{ height: 500, backgroundColor: '#f8f9fa' }}>
+            <ReactFlow
+              nodes={initialNodes}
+              edges={initialEdges}
+              nodeTypes={nodeTypes}
+              fitView
+              attributionPosition="bottom-right"
+            >
+              <Controls />
+              <Background />
+            </ReactFlow>
+          </Box>
+        </Box>
+
+        <Typography variant="body1" sx={{ fontSize: '1.4rem', mt: 4 }}>
+          This flowchart guides you through key decision points:
+          <ul style={{ fontSize: '1.4rem', marginTop: '1rem' }}>
+            <li>Type of outcome variable (continuous, binary, count, or time-based)</li>
+            <li>Number and nature of predictor variables</li>
+            <li>Special considerations like censored data or multiple events</li>
+          </ul>
+        </Typography>
       </Box>
 
       <Box sx={{ my: 12 }}>
