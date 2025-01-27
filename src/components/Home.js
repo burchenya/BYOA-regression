@@ -275,49 +275,49 @@ function Home() {
       id: 'start',
       type: 'input',
       data: { label: 'What type of medical data are you analyzing?' },
-      position: { x: 600, y: 0 },
+      position: { x: 925, y: 100 },
       style: { background: '#3498db', color: 'white', width: 250, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Outcome Type Decision
     {
       id: 'outcome_type',
       data: { label: 'What is your outcome variable?' },
-      position: { x: 600, y: 100 },
+      position: { x: 925, y: 250 },
       style: { background: '#2c3e50', color: 'white', width: 200, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Continuous Branch
     {
       id: 'continuous',
       data: { label: 'Continuous\n(e.g., blood pressure, weight)' },
-      position: { x: 100, y: 250 },
+      position: { x: 175, y: 400 },
       style: { background: '#2ecc71', color: 'white', width: 200, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Binary Branch
     {
       id: 'binary',
       data: { label: 'Binary\n(yes/no outcome)' },
-      position: { x: 400, y: 250 },
+      position: { x: 675, y: 400 },
       style: { background: '#e74c3c', color: 'white', width: 200, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Count Branch
     {
       id: 'count',
       data: { label: 'Count Data\n(number of events)' },
-      position: { x: 800, y: 250 },
+      position: { x: 1175, y: 400 },
       style: { background: '#f39c12', color: 'white', width: 200, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Time Branch
     {
       id: 'time',
       data: { label: 'Time-to-Event\n(survival data)' },
-      position: { x: 1100, y: 250 },
+      position: { x: 1675, y: 400 },
       style: { background: '#9b59b6', color: 'white', width: 200, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Continuous Predictors Decision
     {
       id: 'cont_predictors',
       data: { label: 'How many predictors?' },
-      position: { x: 100, y: 400 },
+      position: { x: 175, y: 550 },
       style: { background: '#27ae60', color: 'white', width: 180, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Simple Linear
@@ -327,7 +327,7 @@ function Home() {
       data: { 
         label: 'Simple Linear Regression\n• One predictor\n• Direct relationship\n• Example: Age → Blood Pressure' 
       },
-      position: { x: 0, y: 550 },
+      position: { x: 50, y: 700 },
       style: { 
         background: '#f0f9f4', 
         border: '2px solid #27ae60', 
@@ -342,7 +342,7 @@ function Home() {
       data: { 
         label: 'Multiple Linear Regression\n• Multiple predictors\n• Complex relationships\n• Example: Age, BMI, Diet → Blood Pressure' 
       },
-      position: { x: 250, y: 550 },
+      position: { x: 300, y: 700 },
       style: { 
         background: '#f0f9f4', 
         border: '2px solid #27ae60', 
@@ -354,7 +354,7 @@ function Home() {
     {
       id: 'binary_predictors',
       data: { label: 'Predictor characteristics?' },
-      position: { x: 400, y: 400 },
+      position: { x: 675, y: 550 },
       style: { background: '#c0392b', color: 'white', width: 180, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Simple Logistic
@@ -364,7 +364,7 @@ function Home() {
       data: { 
         label: 'Simple Logistic Regression\n• One/few predictors\n• Binary outcome\n• Example: Age → Disease Risk (Yes/No)' 
       },
-      position: { x: 400, y: 550 },
+      position: { x: 550, y: 700 },
       style: { 
         background: '#fdf3f2', 
         border: '2px solid #c0392b', 
@@ -379,7 +379,7 @@ function Home() {
       data: { 
         label: 'Multiple Logistic Regression\n• Multiple predictors\n• Binary outcome\n• Example: Age, BMI, BP → Disease Risk' 
       },
-      position: { x: 600, y: 550 },
+      position: { x: 800, y: 700 },
       style: { 
         background: '#fdf3f2', 
         border: '2px solid #c0392b', 
@@ -391,7 +391,7 @@ function Home() {
     {
       id: 'count_predictors',
       data: { label: 'Multiple events\nper subject?' },
-      position: { x: 800, y: 400 },
+      position: { x: 1175, y: 550 },
       style: { background: '#d35400', color: 'white', width: 180, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Simple Poisson
@@ -401,7 +401,7 @@ function Home() {
       data: { 
         label: 'Simple Poisson Regression\n• Single event type\n• Example: Monthly infections per ward' 
       },
-      position: { x: 750, y: 550 },
+      position: { x: 1050, y: 700 },
       style: { 
         background: '#fef5e7', 
         border: '2px solid #d35400', 
@@ -416,7 +416,7 @@ function Home() {
       data: { 
         label: 'Multiple Poisson Regression\n• Multiple event types\n• Example: Different types of complications' 
       },
-      position: { x: 1000, y: 550 },
+      position: { x: 1300, y: 700 },
       style: { 
         background: '#fef5e7', 
         border: '2px solid #d35400', 
@@ -428,7 +428,7 @@ function Home() {
     {
       id: 'time_predictors',
       data: { label: 'Censored data\npresent?' },
-      position: { x: 1100, y: 400 },
+      position: { x: 1675, y: 550 },
       style: { background: '#8e44ad', color: 'white', width: 180, padding: '15px', fontSize: '14px', textAlign: 'center' }
     },
     // Cox Model
@@ -438,7 +438,7 @@ function Home() {
       data: { 
         label: 'Cox Proportional Hazards\n• Censored survival data\n• Example: Patient survival times' 
       },
-      position: { x: 1250, y: 550 },
+      position: { x: 1550, y: 700 },
       style: { 
         background: '#f5f0f7', 
         border: '2px solid #8e44ad', 
@@ -453,7 +453,7 @@ function Home() {
       data: { 
         label: 'Parametric Survival Regression\n• Complete survival data\n• Example: Treatment duration effect' 
       },
-      position: { x: 1500, y: 550 },
+      position: { x: 1800, y: 700 },
       style: { 
         background: '#f5f0f7', 
         border: '2px solid #8e44ad', 
@@ -473,7 +473,7 @@ function Home() {
       style: { stroke: '#3498db' },
       markerEnd: { type: MarkerType.ArrowClosed }
     },
-    // Outcome Type to Branches
+    // Outcome Type to Continuous
     {
       id: 'e-outcome-continuous',
       source: 'outcome_type',
@@ -483,6 +483,35 @@ function Home() {
       style: { stroke: '#2ecc71' },
       markerEnd: { type: MarkerType.ArrowClosed, color: '#2ecc71' }
     },
+    // Continuous to Predictors
+    {
+      id: 'e-cont-pred',
+      source: 'continuous',
+      target: 'cont_predictors',
+      animated: true,
+      style: { stroke: '#2ecc71' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#2ecc71' }
+    },
+    // Predictor Decisions for Linear Regression
+    {
+      id: 'e-cont-simple',
+      source: 'cont_predictors',
+      target: 'simple_linear',
+      label: 'One',
+      labelStyle: { fill: '#27ae60', fontWeight: 700 },
+      style: { stroke: '#27ae60' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#27ae60' }
+    },
+    {
+      id: 'e-cont-multiple',
+      source: 'cont_predictors',
+      target: 'multiple_linear',
+      label: 'Multiple',
+      labelStyle: { fill: '#27ae60', fontWeight: 700 },
+      style: { stroke: '#27ae60' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#27ae60' }
+    },
+    // Outcome Type to Binary
     {
       id: 'e-outcome-binary',
       source: 'outcome_type',
@@ -509,34 +538,6 @@ function Home() {
       labelStyle: { fill: '#9b59b6', fontWeight: 700 },
       style: { stroke: '#9b59b6' },
       markerEnd: { type: MarkerType.ArrowClosed, color: '#9b59b6' }
-    },
-    // Continuous to Predictors
-    {
-      id: 'e-cont-pred',
-      source: 'continuous',
-      target: 'cont_predictors',
-      animated: true,
-      style: { stroke: '#2ecc71' },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#2ecc71' }
-    },
-    // Predictor Decisions
-    {
-      id: 'e-pred-simple',
-      source: 'cont_predictors',
-      target: 'simple_linear',
-      label: 'Single',
-      labelStyle: { fill: '#27ae60', fontWeight: 700 },
-      style: { stroke: '#27ae60' },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#27ae60' }
-    },
-    {
-      id: 'e-pred-multiple',
-      source: 'cont_predictors',
-      target: 'multiple_linear',
-      label: 'Multiple',
-      labelStyle: { fill: '#27ae60', fontWeight: 700 },
-      style: { stroke: '#27ae60' },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#27ae60' }
     },
     // Binary to Predictors
     {
@@ -1070,8 +1071,8 @@ function Home() {
           
           <div style={{ margin: '1.5rem 0' }}>Regression analysis 📈 helps doctors and researchers connect all these variables, allowing them to determine which factors have the greatest impact on recovery. 🏥✅</div>
         </Typography>
-        <Box sx={{ ml: 2 }}>
-          <Paper elevation={2} sx={{ p: 3, backgroundColor: '#fff', mb: 3 }}>
+        <Box sx={{ ml: 2, mb: 4 }}>
+          <Paper elevation={2} sx={{ p: 3, backgroundColor: '#fff', mb: 4 }}>
             <Typography variant="body1" sx={{ fontSize: '1.4rem', mb: 2, fontWeight: 'bold' }}>
               🔍 For example, regression analysis could reveal:
             </Typography>
@@ -1095,9 +1096,9 @@ function Home() {
           Medical research uses many types of analysis. Here's when regression is most appropriate:
         </Typography>
         
-        <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid container spacing={4} sx={{ mb: 5 }}>
           <Grid item xs={12} md={6}>
-            <Paper elevation={2} sx={{ p: 3, height: '100%', backgroundColor: '#fff' }}>
+            <Paper elevation={2} sx={{ p: 3, height: '100%', backgroundColor: '#fff', mb: { xs: 4, md: 0 } }}>
               <Typography variant="h6" gutterBottom sx={{ fontSize: '1.5rem', color: '#2c3e50' }}>
                 Use Regression When:
               </Typography>
@@ -1124,19 +1125,21 @@ function Home() {
           </Grid>
         </Grid>
 
-        <Box sx={{ backgroundColor: '#fff', p: 3, borderRadius: 2 }}>
-          <Typography variant="h3" gutterBottom sx={{ fontSize: '2rem', color: '#2c3e50' }}>
-            Decision Guide
-          </Typography>
-          <Typography variant="body1" sx={{ fontSize: '1.3rem', mb: 2 }}>
-            Choose regression analysis when you can answer "yes" to these questions:
-          </Typography>
-          <Typography variant="body1" sx={{ fontSize: '1.3rem', ml: 2 }}>
-            1. Are you looking for relationships between variables?<br/>
-            2. Is your outcome measurable (like blood pressure) or countable (like hospital visits)?<br/>
-            3. Do you need to control for multiple factors at once?<br/>
-            4. Are you trying to predict future outcomes?
-          </Typography>
+        <Box sx={{ backgroundColor: '#f0f2ff', p: 4, borderRadius: 2, mb: 4 }}>
+          <Paper elevation={2} sx={{ p: 4, backgroundColor: '#fff' }}>
+            <Typography variant="h3" gutterBottom sx={{ fontSize: '2rem', color: '#2c3e50' }}>
+              Decision Guide
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: '1.3rem', mb: 4 }}>
+              Choose regression analysis when you can answer "yes" to these questions:
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: '1.3rem', ml: 2 }}>
+              1. Are you looking for relationships between variables?<br/>
+              2. Is your outcome measurable (like blood pressure) or countable (like hospital visits)?<br/>
+              3. Do you need to control for multiple factors at once?<br/>
+              4. Are you trying to predict future outcomes?
+            </Typography>
+          </Paper>
         </Box>
       </Paper>
       
